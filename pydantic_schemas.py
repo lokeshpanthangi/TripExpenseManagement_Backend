@@ -22,7 +22,6 @@ class Expenses(BaseModel):
 
 
 class Settlements(BaseModel):
-    group_id: str
     from_user: str
     to_user: str
     amount: float
@@ -31,3 +30,8 @@ class Settlements(BaseModel):
 class Login(BaseModel):
     email: str
     password: str
+
+class perhead(BaseModel):
+    expense_id : str
+    total_amount : float
+    person_to_pay : dict[str, float]

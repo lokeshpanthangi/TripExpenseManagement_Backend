@@ -35,6 +35,7 @@ def decode_token(token: str):
     
 security = HTTPBearer()
 
+
 def validate(credentials: HTTPAuthorizationCredentials = Depends(security)):
     token = credentials.credentials
     tokendata = decode_token(token)
