@@ -2,6 +2,8 @@ from passlib.context import CryptContext
 from dotenv import load_dotenv
 import os
 from jose import jwt, JWTError
+from fastapi import Depends, HTTPException
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 load_dotenv()
 
 SECRET_KEY = os.getenv("SECRET_KEY")
@@ -31,3 +33,11 @@ def decode_token(token: str):
     except JWTError:
         return "Invalid token"
     
+security = HTTPBearer()
+
+def validate(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    token = credentials.credentials
+    tokendata = decode_token(token)
+    if tokendata == "Invalid token":
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
+    return tokendata

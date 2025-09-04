@@ -14,7 +14,7 @@ class Groups(BaseModel):
     members: list[str]
 
 class Expenses(BaseModel):
-    group_id: int
+    group_id: str
     description: str
     amount: float
     paid_by: str

@@ -1,13 +1,13 @@
-from httpx import Client
 from motor.motor_asyncio import AsyncIOMotorClient
-from contextlib import asynccontextmanager
 from dotenv import load_dotenv
 import os
+
+
 load_dotenv()
 
 
 ####... Production setup...####
-
+#from contextlib import asynccontextmanager
 # async def startup_db_client(app):
 #     app.mongodb_client = AsyncIOMotorClient(
 #         os.getenv("MONGO_URL"))
