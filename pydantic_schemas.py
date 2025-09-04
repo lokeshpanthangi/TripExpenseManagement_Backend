@@ -10,7 +10,7 @@ class User(BaseModel):
 
 class Groups(BaseModel):
     name: str
-    created_by: str
+    description : Optional[str] = None
     members: list[str]
 
 class Expenses(BaseModel):

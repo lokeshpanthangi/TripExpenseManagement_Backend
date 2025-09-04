@@ -19,7 +19,7 @@ def verify_password(plain_password: str, hashed_password: str):
 
 def jwt_token(user: dict):
     payload = {
-        "sub": str(user["_id"]),
+        "_id": str(user["_id"]),
         "email": user["email"]
     }
     return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
@@ -31,4 +31,3 @@ def decode_token(token: str):
     except JWTError:
         return "Invalid token"
     
-
