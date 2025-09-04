@@ -1,16 +1,34 @@
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from httpx import Client
+from motor.motor_asyncio import AsyncIOMotorClient
+from contextlib import asynccontextmanager
+from dotenv import load_dotenv
+import os
+load_dotenv()
 
-DATABASE_URL = "sqlite:///./test.db"
 
-engine = create_engine(DATABASE_URL)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-Base = declarative_base()
+####... Production setup...####
 
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+# async def startup_db_client(app):
+#     app.mongodb_client = AsyncIOMotorClient(
+#         os.getenv("MONGO_URL"))
+#     app.mongodb = app.mongodb_client.get_database(os.getenv("DATABASE_NAME"))
+#     print("MongoDB connected.")
+
+
+# async def shutdown_db_client(app):
+#     app.mongodb_client.close()
+#     print("Database disconnected.")
+
+
+# @asynccontextmanager
+# async def lifespan(app):
+#     # Start the database connection
+#     await startup_db_client(app)
+#     yield
+#     # Close the database connection
+#     await shutdown_db_client(app)
+
+####... Development setup...####
+
+client = AsyncIOMotorClient(os.getenv("MONGO_URL"))
+db = client.get_database(os.getenv("DATABASE_NAME"))

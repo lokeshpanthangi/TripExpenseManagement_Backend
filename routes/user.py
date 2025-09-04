@@ -1,24 +1,26 @@
-from fastapi import APIRouter,Depends
-from CRUD.user_crud import create_user, login
-from sqlalchemy.orm import Session
-from database import get_db
-from pydantic_schemas import User,Login
-from models import Users
-
+from fastapi import APIRouter, HTTPException
+from CRUD.user import insert_user, get_user_by_email, login_user
+from pydantic_schemas import User, Login
+from database import db
 
 user_router = APIRouter()
 
 
 @user_router.post("/create_user")
-def register_user(user: User, db: Session = Depends(get_db)):
-    return create_user(user, db)
+async def create_user_route(user: User):
+    token = await insert_user(user, db)
+    return {"access_token": token, "token_type": "bearer"}
 
+@user_router.get("/get_user/{email}")
+async def get_user_route(email: str):
+    user = await get_user_by_email(email, db)
+    if user:
+        user.pop("password")
+    return {"user": user}
 
-@user_router.post("/login/")
-def login_user(user: Login, db: Session = Depends(get_db)):
-    return login(user, db)
-
-
-@user_router.get("/get_all_users")
-def get_all_users(db: Session = Depends(get_db)):
-    return db.query(Users).all()
+@user_router.post("/login")
+async def login_route(login: Login):
+    token = await login_user(login.email, login.password, db)
+    if token:
+        return {"access_token": token}
+    raise HTTPException(status_code=401, detail="Invalid credentials")
